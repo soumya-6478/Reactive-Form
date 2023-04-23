@@ -1,0 +1,194 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <!-- {{ userform.value | json }} -->
+      <div *ngIf="userform.errors?.invalidLogin" class="text-danger">
+        Please enter correct details!!!
+      </div>
+      <form [formGroup]="userform" (ngSubmit)="onSubmit()">
+        <div formGroupName="user">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              formControlName="username"
+              class="form-control"
+            />
+            <div *ngIf="!username.valid && username.touched">
+              <span
+                class="help-block"
+                class="text-danger"
+                *ngIf="username.errors.required"
+                >User name is required</span
+              >
+              <span
+                class="help-block"
+                class="text-danger"
+                *ngIf="username.errors.forbiddenNames"
+                >User name is forbidden</span
+              >
+            </div>
+            <!-- [formControlName]="'username'" -->
+          </div>
+          <div class="form-group">
+            <label for="email">email</label>
+            <input
+              type="text"
+              id="email"
+              formControlName="email"
+              class="form-control"
+            />
+            <span *ngIf="email.pending">Checking for uniqueness...</span>
+            <div *ngIf="!email.valid && email.touched">
+              <span
+                class="help-block"
+                class="text-danger"
+                *ngIf="email.errors?.required"
+                >email is required</span
+              >
+              <span
+                class="help-block"
+                class="text-danger"
+                *ngIf="email.errors?.email"
+                >please enter a valid email</span
+              >
+              <span
+                class="help-block"
+                class="text-danger"
+                *ngIf="email.errors?.shouldBeUnique"
+                >This email has already registered!</span
+              >
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                value=""
+                formControlName="check"
+                id="flexCheckDefault"
+              />
+              <label class="form-check-label" for="flexCheckDefault">
+                Send me promotional offers
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input type="radio" formControlName="gender" [value]="gender" />{{
+              gender
+            }}
+          </label>
+        </div>
+        <div>
+          <input
+            type="text"
+            class="form-control"
+            (keydown.enter)="onClick(topic, $event)"
+            #topic
+          />
+          <ul class="list-group">
+            <li
+              class="list-group-item"
+              *ngFor="let topic of topics.controls"
+              (click)="removeTopic(topic)"
+            >
+              {{ topic.value }}
+            </li>
+          </ul>
+        </div>
+        <div formArrayName="hobbies">
+          <h4>Your Hobbies</h4>
+          <button class="btn btn-default" type="button" (click)="onAddHobby()">
+            Add Hobby
+          </button>
+          <div
+            class="form-group"
+            *ngFor="let hobbyControl of controls; let i = index"
+          >
+            <input
+              type="text"
+              class="form-control"
+              (keydown.enter)="handleKeyEnter($event)"
+              [formControlName]="i"
+            />
+            <!-- if we dont handle this event it will console log the user model  -->
+          </div>
+        </div>
+
+        <hr />
+        <div class="form-group">
+          <label for="username">Old Password</label>
+          <input
+            type="password"
+            id="Password"
+            formControlName="old"
+            class="form-control"
+          />
+          <div *ngIf="!old.valid && old.touched">
+            <div
+              class="help-block"
+              class="text-danger"
+              *ngIf="old.errors?.required"
+            >
+              Old password is required
+            </div>
+            <!-- alert & alert-danger also can be used -->
+            <div
+              class="help-block"
+              class="text-danger"
+              *ngIf="old.errors?.invalidPassword"
+            >
+              Old password Don't match
+            </div>
+          </div>
+          <label for="username">New Password</label>
+          <input
+            type="password"
+            id="password"
+            formControlName="new"
+            class="form-control"
+          />
+          <div
+            *ngIf="!new.valid && new.touched"
+            class="help-block"
+            class="text-danger"
+          >
+            New password is required
+          </div>
+          <label for="username">Confirm Password</label>
+          <input
+            type="password"
+            id="password1"
+            formControlName="confirm"
+            class="form-control"
+          />
+          <div *ngIf="!confirm.valid && confirm.touched">
+            <div
+              *ngIf="confirm.errors?.required"
+              class="help-block"
+              class="text-danger"
+            >
+              Confirm password is required
+            </div>
+          </div>
+          <div
+            *ngIf="userform.errors?.passwordsShouldMatch"
+            class="help-block"
+            class="text-danger"
+          >
+            Confirm password should match new password
+          </div>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+        <span
+          class="help-block"
+          class="text-danger"
+          *ngIf="!userform.valid && submitted"
+          >Overall data is invalid</span
+        >
+      </form>
+    </div>
+  </div>
+</div>
